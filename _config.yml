@@ -1,0 +1,22 @@
+plugins:
+  - jekyll-seo-tag
+
+title: Free multiplayer trivia game with personal group and chat.
+
+description: Play hundreds/thousands of quizes with your friends and family while learning.
+
+author: Navjot Singh Minhas
+
+logo: /images/logo.png
+
+twitter:
+    username: NavjotSingh548
+
+social:
+    name: Navjot Singh Minhas
+    links:
+        - http://navjotsinghminhas.com
+        - https://www.linkedin.com/in/navjotsinghminhas
+
+webmaster_verifications:
+    google: fZEyxt_N0LXJm_c5mjatRmzujefTB0IZUpWQ3iFi4GI
