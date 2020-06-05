@@ -73,7 +73,8 @@ function enableCarousel() {
     $('.owl-carousel').owlCarousel({
         loop: true,
         autoWidth: true,
-        autoplayTimeout: 3000,
+		autoplay:true,
+        autoplayTimeout: 5000,
         responsiveClass: true,
         responsive: {
             0: {
