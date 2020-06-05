@@ -1,6 +1,6 @@
 "use strict";
 
-var connection = new signalR.HubConnectionBuilder().withUrl("https://quiz.navjotsinghminhas.com/quizchat").build();
+var connection = new signalR.HubConnectionBuilder().withUrl("https://api.navjotsinghminhas.com/quizchat").build();
 
 function connect() {
     connection.start()

@@ -44,7 +44,7 @@ $(function () {
 });
 
 function getCategories() {
-    getData("https://quiz.navjotsinghminhas.com/quiz/categories")
+    getData("https://api.navjotsinghminhas.com/quiz/categories")
         .then(response => {
             if (response != "")
                 addCategories(response);
@@ -247,7 +247,7 @@ function hideQuizModal() {
 }
 
 function initializeQuiz() {
-    getData("https://quiz.navjotsinghminhas.com/quiz/Start?groupId=" + $groupId + "&topic=" + $topic)
+    getData("https://api.navjotsinghminhas.com/quiz/Start?groupId=" + $groupId + "&topic=" + $topic)
         .then(response => {
             if (response) {
                 if (startGame($groupId)) {
@@ -270,7 +270,7 @@ function startQuiz() {
 }
 
 function getNextQuestion() {
-    getData("https://quiz.navjotsinghminhas.com/quiz/Question?groupId=" + $groupId)
+    getData("https://api.navjotsinghminhas.com/quiz/Question?groupId=" + $groupId)
         .then(response => {
             if (response != "")
                 setQuestion(response);
