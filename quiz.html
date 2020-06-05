@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Free Trivia Quizzes</title>
+	<link rel="icon" href="logo.png" type="image/x-icon"> 
+
+    <!-- Responsive -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+
+    <!-- CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link href="css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Quiz -->
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-8708394211103270"
+         data-ad-slot="4829533237"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+
+    <div class="container">
+        <div class="row">
+            <div id="quizContainer" class="col-sm" style="display: none;">
+                <div class="container-fluid" style="height: 100%; margin: 1.75rem auto;">
+                    <div id="startGameButtonDiv" style="display: none; height: 100%; align-items: center; justify-content: center">
+                        <button type="button" class="btn btn-primary" onclick="initializeQuiz()">
+                            <i class="fa fa-trophy" style="padding-right:5px"></i>Start Quiz
+                        </button>
+                    </div>
+                    <div id="quizDiv" class="modal-dialog" style="display: none; padding-top: 20px;">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3><span class="label label-warning" id="qid"><label id="question"></label></span></h3>
+                            </div>
+                            <div class="modal-body">
+                                <img id="questionImage" style="max-width:465px; margin: auto; padding-bottom: 1rem; display:none;" />
+
+                                <div id="quiz" class="quiz" data-toggle="buttons">
+                                    <label id="optionLabel0" class="element-animation1 btn btn-lg btn-primary btn-block">
+                                        <span class="btn-label"><label style="padding-top: 18px;">A.</label></span>
+                                        <input type="radio" name="q_answer" value="0"><label id="option0"></label>
+                                    </label>
+                                    <label id="optionLabel1" class="element-animation2 btn btn-lg btn-primary btn-block">
+                                        <span class="btn-label"><label style="padding-top: 18px;">B.</label></span>
+                                        <input type="radio" name="q_answer" value="1"><label id="option1"></label>
+                                    </label>
+                                    <label id="optionLabel2" class="element-animation3 btn btn-lg btn-primary btn-block">
+                                        <span class="btn-label"><label style="padding-top: 18px;">C.</label></span>
+                                        <input type="radio" name="q_answer" value="2"><label id="option2"></label>
+                                    </label>
+                                    <label id="optionLabel3" class="element-animation4 btn btn-lg btn-primary btn-block">
+                                        <span class="btn-label"><label style="padding-top: 18px;">D.</label></span>
+                                        <input type="radio" name="q_answer" value="3"><label id="option3"></label>
+                                    </label>
+                                </div>
+                            </div>
+                            <div id="waiting" class="modal-footer text-muted" style="display:none;">
+                                <marquee direction="right">Waiting for others to answer...</marquee>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm">
+                <div class="container py-5 px-4">
+                    <div class="row rounded-lg overflow-hidden shadow" style="background: white;">
+                        <!-- Chat Box-->
+                        <div class="col-12 px-0" style="padding-bottom: 4rem;">
+                            <div id="chat" class="px-4 py-5 chat-box bg-white" />
+
+                            <!-- Typing area -->
+                            <div class="bg-light" style="bottom: 0; position: absolute; width: 95%; margin-bottom: 20px;">
+                                <div class="input-group">
+                                    <input id="chatMessage" type="text" placeholder="Type a message" aria-describedby="button-addon2"
+                                           class="form-control rounded-0 border-0 py-4 bg-light">
+                                    <div class="input-group-append">
+                                        <button id="button-addon2" type="submit" class="btn btn-link">
+                                            <i class="fa fa-paper-plane"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Username Modal -->
+    <div class="modal" id="userNameModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">What's your name?</h4>
+                </div>
+                <div class="modal-body">
+                    <input id="userName" type="text" placeholder="Please enter your name here" aria-describedby="button-addon2" class="form-control rounded-0 border-0 py-4 bg-light">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="checkUserName()">Continue</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quiz Modal -->
+    <div class="modal" id="quizModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">Let's Start!</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <input id="quizUrl" type="text" class="form-control rounded-0 border-0 py-4 bg-light" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" onclick="copyQuizUrl()">Copy</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="hideQuizModal()">Continue</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button id="scrollButton" onclick="scrollToQuiz()" class="btn btn-outline-secondary scrollToTop" title="Go to top">Go to  Question</button>
+
+    <!-- Scripts -->
+    <script src="js/jquery-1.11.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/signalr/signalr.min.js"></script>
+    <script src="js/chat.js"></script>
+    <script src="js/rest.js"></script>
+    <script src="js/main.js"></script>
+
+    <script>initialize();</script>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-136311538-5"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-136311538-5');
+    </script>
+
+</body>
+
+</html>

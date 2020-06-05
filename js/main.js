@@ -1,13 +1,4 @@
 $(function () {
-    var loading = $('#loadbar').hide();
-    $(document)
-        .ajaxStart(function () {
-            loading.show();
-        }).ajaxStop(function () {
-            loading.hide();
-        });
-
-    $('#userNameModal').modal('show');
 
     $("label.btn").on('click', function () {
         $('#waiting').css('display', 'block');
@@ -23,7 +14,9 @@ $(function () {
 
         $("#quiz").find("label.btn").css("pointer-events", "none");
 
-        answered($id, $username, choice);
+        answered($groupId, $username, choice);
+
+        $('#quizDiv').focus();
     });
 
     $.fn.checking = function (ck) {
@@ -50,16 +43,73 @@ $(function () {
     });
 });
 
-function checkGroupId() {
-    $id = getUrlParameter("id");
+function getCategories() {
+    getData("https://quiz.navjotsinghminhas.com/quiz/categories")
+        .then(response => {
+            if (response != "")
+                addCategories(response);
+            else
+                window.location.replace("Error.html?error=Internal Server Error");
+        });
+}
 
-    if (typeof $id != "undefined" && !isEmptyOrSpaces($id))
-        join($id, $username);
+function addCategories(json) {
+    for (var i = 0; i < json.length; i++) {
+        var html = "<div class=\"row\"><h6 class=\"categoryHeading\">" + json[i].Title +"</h6><div class=\"owl-carousel owl-theme\">";
+
+        for (var j = 0; j < json[i].Topics.length; j++) {
+            html += "<div class=\"item\"><div style=\"width: 220px; height: 220px\"><a class=\"wp-categories-link maxheight\" href=\"https://quiz.navjotsinghminhas.com/quiz.html?topic=" + json[i].Topics[j].Slug + "\"><h5 class=\"wp-categories-title\">" + json[i].Topics[j].Name + "</h5><img src=\"" + json[i].Topics[j].Icon + "\" class=\"wp-categories-icon\"></a></div></div>";
+        }
+
+        html += "</div></div>";
+
+        $('#categories').append(html);
+    }
+
+    enableCarousel();
+}
+
+function enableCarousel() {
+    $('.owl-carousel').owlCarousel({
+        loop: true,
+        autoWidth: true,
+        autoplayTimeout: 3000,
+        responsiveClass: true,
+        responsive: {
+            0: {
+                items: 1
+            },
+            600: {
+                items: 3
+            },
+            1000: {
+                items: 5
+            }
+        }
+    })
+}
+
+function initialize() {
+    $groupId = getUrlParameter("id");
+
+    if (typeof $groupId == "undefined" || isEmptyOrSpaces($groupId)) {
+        $topic = getUrlParameter("topic");
+
+        if (typeof $topic == "undefined" || isEmptyOrSpaces($topic))
+            window.location.replace("Error.html?error=Page not found!");
+    }
+
+    $('#userNameModal').modal('show');
+}
+
+function joinChat() {
+    if (typeof $groupId != "undefined" && !isEmptyOrSpaces($groupId))
+        join($groupId, $username);
     else {
-        $id = makeId(8);
-        join($id, $username);
+        $groupId = makeId(8);
+        join($groupId, $username);
 
-        $("#quizUrl").val($(location).attr("href") + "?id=" + $id);
+        $("#quizUrl").val("https://" + $(location).attr("hostname") + "/quiz.html?id=" + $groupId);
         $('#quizModal').modal('show');
     }
 }
@@ -153,17 +203,13 @@ function receiveMessageUI(user, message) {
     scrollToEnd();
 }
 
-function scrollToEnd() {
-    $("#chat").animate({ scrollTop: $('#chat').prop("scrollHeight") }, 1000);
-}
-
 function isEmptyOrSpaces(str) {
     return str === null || str.match(/^ *$/) !== null;
 }
 
 function _sendMessage() {
     if (!isEmptyOrSpaces($("#chatMessage").val())) {
-        if (sendMessage($id, $username, $("#chatMessage").val())) {
+        if (sendMessage($groupId, $username, $("#chatMessage").val())) {
             sendMessageUI($("#chatMessage").val());
             $("#chatMessage").val('');
         }
@@ -197,13 +243,14 @@ function copyQuizUrl() {
 function hideQuizModal() {
     $('#startGameButtonDiv').css('display', 'flex');
     $('#quizModal').modal('hide');
+    $('#quizContainer').css('display', 'block');
 }
 
 function initializeQuiz() {
-    getData("https://api.navjotsinghminhas.com/quiz?groupId=" + $id + "&topic=" + "general-knowledge")
+    getData("https://quiz.navjotsinghminhas.com/quiz/Start?groupId=" + $groupId + "&topic=" + $topic)
         .then(response => {
             if (response) {
-                if (startGame($id)) {
+                if (startGame($groupId)) {
                     startQuiz();
                 }
             }
@@ -213,13 +260,17 @@ function initializeQuiz() {
 function startQuiz() {
     $('#startGameButtonDiv').css('display', 'none');
 
-    getNextQuestion(-1);
+    getNextQuestion();
 
     $('#quizDiv').css('display', 'block');
+    $('#quizContainer').css('display', 'block');
+    $('#scrollButton').css('display', 'block');
+
+    scrollToQuiz();
 }
 
 function getNextQuestion() {
-    getData("https://api.navjotsinghminhas.com/quiz/GetQuestion?groupId=" + $id)
+    getData("https://quiz.navjotsinghminhas.com/quiz/Question?groupId=" + $groupId)
         .then(response => {
             if (response != "")
                 setQuestion(response);
@@ -249,4 +300,13 @@ function setQuestion(json) {
     }
 
     $("#quiz").find("label.btn").css("pointer-events", "auto");
+}
+
+function scrollToQuiz() {
+    $('html, body').animate({ scrollTop: $('#quizDiv').offset().top }, 'slow');
+    $('#quizDiv').focus();
+}
+
+function scrollToEnd() {
+    $("#chat").animate({ scrollTop: $('#chat').prop("scrollHeight") }, 1000);
 }

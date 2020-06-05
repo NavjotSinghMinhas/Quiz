@@ -1,13 +1,13 @@
 plugins:
   - jekyll-seo-tag
 
-title: Free multiplayer trivia game with personal group and chat.
+title: Free multiplayer trivia game with personal group chat.
 
 description: Play hundreds/thousands of quizes with your friends and family while learning.
 
 author: Navjot Singh Minhas
 
-logo: /images/logo.png
+logo: /logo.png
 
 twitter:
     username: NavjotSingh548

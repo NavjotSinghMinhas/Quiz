@@ -12,23 +12,23 @@
     <!-- CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <link href="css/font-awesome.min.css" rel="stylesheet">
-    <link href="css/owl.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
 </head>
 
 <body>
-    <div id="categories" class="container" />
+    <div class="container">
+        <div class="row">
+            <div class="col-sm">
+                <h3 id="error" class="error" />
+            </div>
+        </div>
+    </div>
 
     <!-- Scripts -->
-    <script src="js/jquery-1.11.1.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
-    <script src="js/rest.js"></script>
     <script src="js/main.js"></script>
-    <script src="js/owl.js"></script>
 
-    <script>
-        getCategories();
-    </script>
+    <script>document.getElementById("error").innerHTML = getUrlParameter('error');</script>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-136311538-5"></script>
