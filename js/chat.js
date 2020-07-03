@@ -60,6 +60,8 @@ connection.onreconnected(connectionId => {
     console.log("Reconnected with connection id: " + connectionId);
     receiveMessageUI("<!AutomatedUser/>" + $username, "Reconnected.");
     join($groupId, $username);
+
+    sendMessage($groupId, $username, $username + " reconnected.");
 });
 
 connection.onclose(async () => {
