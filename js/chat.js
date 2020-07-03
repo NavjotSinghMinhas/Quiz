@@ -1,6 +1,9 @@
 "use strict";
 
-var connection = new signalR.HubConnectionBuilder().withUrl("https://api.navjotsinghminhas.com/quizchat").build();
+var connection = new signalR.HubConnectionBuilder()
+    .withUrl("https://api.navjotsinghminhas.com/quizchat")
+    .withAutomaticReconnect([0, 2000, 4000, 8000])
+    .build();
 
 function connect() {
     connection.start()
@@ -46,4 +49,20 @@ function sendMessage(id, user, message) {
 
 connection.on("ReceiveMessage", function (user, message) {
     receiveMessageUI(user, message);
+});
+
+connection.onreconnecting(error => {
+    console.log("Reconnecting because of " + error);
+    receiveMessageUI("<!AutomatedUser/>" + $username, "Reconnecting...");
+});
+
+connection.onreconnected(connectionId => {
+    console.log("Reconnected with connection id: " + connectionId);
+    receiveMessageUI("<!AutomatedUser/>" + $username, "Reconnected.");
+});
+
+connection.onclose(async () => {
+    console.log("Connection closed, restarting.");
+    receiveMessageUI("<!AutomatedUser/>" + $username, "Internet disconnected, retrying connection.");
+    await connect();
 });
