@@ -1,3 +1,6 @@
+$home = "https://quiz.navjotsinghminhas.com"
+$apiUrl = "https://api.navjotsinghminhas.com";
+
 $(function () {
 
     $("label.btn").on('click', function () {
@@ -14,7 +17,7 @@ $(function () {
 
         $("#quiz").find("label.btn").css("pointer-events", "none");
 
-        answered($groupId, $username, choice);
+        answered($groupId, choice);
 
         $('#quizDiv').focus();
     });
@@ -44,10 +47,12 @@ $(function () {
 });
 
 function getCategories() {
-    getData("https://api.navjotsinghminhas.com/quiz/categories")
+    getData($apiUrl + "/quiz/categories")
         .then(response => {
-            if (response != "")
+            if (response != "") {
                 addCategories(response);
+                $('#overlay').fadeOut();
+            }
             else
                 window.location.replace("Error.html?error=Internal Server Error");
         });
@@ -55,39 +60,20 @@ function getCategories() {
 
 function addCategories(json) {
     for (var i = 0; i < json.length; i++) {
-        var html = "<div class=\"row\"><h6 class=\"categoryHeading\">" + json[i].Title +"</h6><div class=\"owl-carousel owl-theme\">";
+        var html = "<div class='grid-item'><div><span>" + json[i].Title + "</span><ul class='children'>";
 
         for (var j = 0; j < json[i].Topics.length; j++) {
-            html += "<div class=\"item\"><div style=\"width: 220px; height: 220px\"><a class=\"wp-categories-link maxheight\" href=\"https://quiz.navjotsinghminhas.com/quiz.html?topic=" + json[i].Topics[j].Slug + "\"><h5 class=\"wp-categories-title\">" + json[i].Topics[j].Name + "</h5><img src=\"" + json[i].Topics[j].Icon + "\" class=\"wp-categories-icon\"></a></div></div>";
+            html += "<li><a href=" + $home + "/quiz.html?topic=" + json[i].Topics[j].Slug + "><img src=" + json[i].Topics[j].Icon + " alt='Avatar'/>" + json[i].Topics[j].Name + "</a></li>";
         }
 
-        html += "</div></div>";
+        html += "</ul><div></div>";
 
         $('#categories').append(html);
     }
 
-    enableCarousel();
-}
-
-function enableCarousel() {
-    $('.owl-carousel').owlCarousel({
-        loop: true,
-        autoWidth: true,
-		autoplay:true,
-        autoplayTimeout: 5000,
-        responsiveClass: true,
-        responsive: {
-            0: {
-                items: 1
-            },
-            600: {
-                items: 3
-            },
-            1000: {
-                items: 5
-            }
-        }
-    })
+    $('.grid').masonry({
+        itemSelector: '.grid-item'
+    });
 }
 
 function initialize() {
@@ -155,23 +141,32 @@ function receiveMessageUI(user, message) {
     if (user == "<!AutomatedAll/>") {
         if (message == "GameStarted") {
             var element1 = "<div class=\"media mb-3\"><div class=\"media-body ml-3 center\"><div class=\"bg-automated rounded py-2 px-3 mb-2 inline\">";
-            var element2 = $("<p class=\"mb-0\">Game Started.</p>")
+            var element2 = $("<p class=\"mb-0 automated\">Game Started.</p>")
             var element3 = "</div></div></div>";
             $("#chat").append(element1 + element2[0].outerHTML + element3);
 
             startQuiz();
         }
         else {
-            var element1 = "<div class=\"media mb-3\"><div class=\"media-body ml-3 center\"><div class=\"bg-automated rounded py-2 px-3 mb-2 inline\">";
-            var element2 = $("<p class=\"mb-0\"></p>").append(message);
-            var element3 = "</div></div></div>";
-            $("#chat").append(element1 + element2[0].outerHTML + element3);
+            if (message.startsWith("<span>")) {
+                $("#score").html(message);
+                $("<br class=\"breakline\" /><span class=\"tab\"></span>").insertAfter("#score>span").not(":last");
 
-            if (message.startsWith("Score")) {
                 $('#waiting').css('display', 'none');
+
                 setTimeout(function () {
                     getNextQuestion();
                 }, 2000);
+            }
+            else if (message.includes("won!") || message.includes("lost")) {
+                $("#winners").text(message);
+                $('#winnerModal').modal('show');
+            }
+            else {
+                var element1 = "<div class=\"media mb-3\"><div class=\"media-body ml-3 center\"><div class=\"bg-automated rounded py-2 px-3 mb-2 inline\">";
+                var element2 = $("<p class=\"mb-0 automated\"></p>").append(message);
+                var element3 = "</div></div></div>";
+                $("#chat").append(element1 + element2[0].outerHTML + element3);
             }
         }
     }
@@ -179,7 +174,7 @@ function receiveMessageUI(user, message) {
         if (user == "<!AutomatedUser/>" + $username) {
             if (message == "GameAlreadyStarted!") {
                 var element1 = "<div class=\"media mb-3\"><div class=\"media-body ml-3 center\"><div class=\"bg-automated rounded py-2 px-3 mb-2 inline\">";
-                var element2 = $("<p class=\"mb-0\">You are late to the party, but you can still win!</p>")
+                var element2 = $("<p class=\"mb-0 automated\">You are late to the party, but you can still win!</p>")
                 var element3 = "</div></div></div>";
                 $("#chat").append(element1 + element2[0].outerHTML + element3);
 
@@ -187,7 +182,7 @@ function receiveMessageUI(user, message) {
             }
             else {
                 var element1 = "<div class=\"media mb-3\"><div class=\"media-body ml-3 center\"><div class=\"bg-automated rounded py-2 px-3 mb-2 inline\">";
-                var element2 = $("<p class=\"mb-0\"></p>").append(message);
+                var element2 = $("<p class=\"mb-0 automated\"></p>").append(message);
                 var element3 = "</div></div></div>";
                 $("#chat").append(element1 + element2[0].outerHTML + element3);
             }
@@ -248,7 +243,7 @@ function hideQuizModal() {
 }
 
 function initializeQuiz() {
-    getData("https://api.navjotsinghminhas.com/quiz/Start?groupId=" + $groupId + "&topic=" + $topic)
+    getData($apiUrl + "/quiz/Start?groupId=" + $groupId + "&topic=" + $topic)
         .then(response => {
             if (response) {
                 if (startGame($groupId)) {
@@ -263,15 +258,16 @@ function startQuiz() {
 
     getNextQuestion();
 
+    $('#scoreContainer').css('display', 'block');
     $('#quizDiv').css('display', 'block');
     $('#quizContainer').css('display', 'block');
     $('#scrollButton').css('display', 'block');
 
-    scrollToQuiz();
+    scrollToTop();
 }
 
 function getNextQuestion() {
-    getData("https://api.navjotsinghminhas.com/quiz/Question?groupId=" + $groupId)
+    getData($apiUrl + "/quiz/Question?groupId=" + $groupId)
         .then(response => {
             if (response != "")
                 setQuestion(response);
@@ -303,11 +299,15 @@ function setQuestion(json) {
     $("#quiz").find("label.btn").css("pointer-events", "auto");
 }
 
-function scrollToQuiz() {
-    $('html, body').animate({ scrollTop: $('#quizDiv').offset().top }, 'slow');
+function scrollToTop() {
+    $('html, body').animate({ scrollTop: $('#scoreContainer').offset().top }, 'slow');
     $('#quizDiv').focus();
 }
 
 function scrollToEnd() {
     $("#chat").animate({ scrollTop: $('#chat').prop("scrollHeight") }, 1000);
+}
+
+function navigateToHome() {
+    window.location.href = $home;
 }

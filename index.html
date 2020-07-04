@@ -3,9 +3,9 @@
 
 <head>
     <title>Free Trivia Quizzes</title>
-	<link rel="icon" href="images/logo.png" type="image/x-icon">
-	<meta property="og:image" content="images/og-image.png"/>
-	<meta property="og:description" content="Quiz is the free trivia game where you get unlimited questions to play with your friends ..."/>
+    <link rel="icon" href="images/logo.png" type="image/x-icon">
+    <meta property="og:image" content="images/og-image.png" />
+    <meta property="og:description" content="Quiz is the free trivia game where you get unlimited questions to play with your friends ..." />
 
     <!-- Responsive -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -19,11 +19,16 @@
 </head>
 
 <body>
-    <div id="categories" class="container" />
+    <div id="overlay" class="center">
+        <img src="images/loading.gif" alt="Loading" class="vcenter" style="max-width:800px; width:100%; height:auto" />
+    </div>
+
+    <div id="categories" class="container grid"></div>
 
     <!-- Scripts -->
     <script src="js/jquery-1.11.1.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script src="js/masonry.pkgd.min.js"></script>
     <script src="js/rest.js"></script>
     <script src="js/main.js"></script>
     <script src="js/owl.js"></script>
@@ -41,7 +46,6 @@
 
         gtag('config', 'UA-136311538-5');
     </script>
-
 </body>
 
 </html>

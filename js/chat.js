@@ -1,17 +1,21 @@
 "use strict";
+var connectionId;
 
 var connection = new signalR.HubConnectionBuilder()
-    .withUrl("https://api.navjotsinghminhas.com/quizchat")
-    .withAutomaticReconnect([0, 2000, 4000, 8000])
+    .withUrl($apiUrl + "/quizchat")
+    .withAutomaticReconnect([0, 3000, 10000, 20000])
     .build();
 
 function connect() {
     connection.start()
         .then(function () {
+            connectionId = connection.connectionId;
             joinChat();
+            return true;
         })
         .catch(function (err) {
-            return console.error(err.toString());
+            console.error(err.toString());
+            return false;
         });
 }
 
@@ -23,8 +27,8 @@ function join(id, user) {
     return true;
 }
 
-function answered(groupId, userName, optionIndex) {
-    connection.invoke("Answered", groupId, userName, optionIndex).catch(function (err) {
+function answered(groupId, optionIndex) {
+    connection.invoke("Answered", groupId, optionIndex).catch(function (err) {
         return console.error(err.toString());
     });
 
@@ -47,6 +51,12 @@ function sendMessage(id, user, message) {
     return true;
 }
 
+function reconnected(id, user) {
+    connection.invoke("Reconnected", id, user).catch(function (err) {
+        return console.error(err.toString());
+    });
+}
+
 connection.on("ReceiveMessage", function (user, message) {
     receiveMessageUI(user, message);
 });
@@ -56,16 +66,17 @@ connection.onreconnecting(error => {
     receiveMessageUI("<!AutomatedUser/>" + $username, "Reconnecting...");
 });
 
-connection.onreconnected(connectionId => {
-    console.log("Reconnected with connection id: " + connectionId);
-    receiveMessageUI("<!AutomatedUser/>" + $username, "Reconnected.");
+connection.onreconnected(_connectionId => {
+    console.log("Reconnected with connection id: " + _connectionId);
+    sendMessageUI("Reconnected!");
     join($groupId, $username);
 
-    sendMessage($groupId, $username, $username + " reconnected.");
+    reconnected($groupId, $username, connectionId);
+    connectionId = _connectionId;
 });
 
 connection.onclose(async () => {
     console.log("Connection closed, restarting.");
     receiveMessageUI("<!AutomatedUser/>" + $username, "Internet disconnected, retrying connection.");
-    await connect();
+    while (!await connect()) { }
 });

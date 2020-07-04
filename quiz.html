@@ -3,9 +3,9 @@
 
 <head>
     <title>Free Trivia Quizzes</title>
-	<link rel="icon" href="images/logo.png" type="image/x-icon">
-	<meta property="og:image" content="images/og-image.png"/>
-	<meta property="og:description" content="I challenge you for a free trivia game, can you beat me?"/>
+    <link rel="icon" href="images/logo.png" type="image/x-icon">
+    <meta property="og:image" content="images/og-image.png" />
+    <meta property="og:description" content="I challenge you for a free trivia game, can you beat me?" />
 
     <!-- Responsive -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -24,9 +24,20 @@
          data-ad-client="ca-pub-8708394211103270"
          data-ad-slot="4829533237"
          data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
+         data-full-width-responsive="true">
+    </ins>
 
     <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div id="scoreContainer" class="score score-bg order-card" style="display: none;">
+                    <div class="score-body">
+                        <h6 class="score-heading m-b-20">Score: </h6>
+                        <div id="score"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="row">
             <div id="quizContainer" class="col-sm" style="display: none;">
                 <div class="container-fluid" style="height: 100%; margin: 1.75rem auto;">
@@ -79,8 +90,7 @@
                             <!-- Typing area -->
                             <div class="bg-light" style="bottom: 0; position: absolute; width: 95%; margin-bottom: 20px;">
                                 <div class="input-group">
-                                    <input id="chatMessage" type="text" placeholder="Type a message" aria-describedby="button-addon2"
-                                           class="form-control rounded-0 border-0 py-4 bg-light">
+                                    <input id="chatMessage" type="text" placeholder="Type a message" aria-describedby="button-addon2" class="form-control rounded-0 border-0 py-4 bg-light">
                                     <div class="input-group-append">
                                         <button id="button-addon2" type="submit" class="btn btn-link">
                                             <i class="fa fa-paper-plane"></i>
@@ -99,14 +109,15 @@
     <div class="modal" id="userNameModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel">What's your name?</h4>
+                <div class="modal-header" style="display: block;">
+                    <h4 class="modal-title">What's your name, challenger?</h4>
+                    <h6 class="modal-subtitle">Just your first one is fine. Or a nickname.</h6>
                 </div>
                 <div class="modal-body">
-                    <input id="userName" type="text" placeholder="Please enter your name here" aria-describedby="button-addon2" class="form-control rounded-0 border-0 py-4 bg-light">
+                    <input id="userName" type="text" placeholder="Please enter your name here..." aria-describedby="button-addon2" class="form-control rounded-0 border-0 py-4 bg-light">
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="checkUserName()">Continue</button>
+                    <button type="button" class="btn btn-primary mybutton" onclick="checkUserName()">Give me all you've got</button>
                 </div>
             </div>
         </div>
@@ -117,32 +128,50 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel">Let's Start!</h4>
+                    <h4 class="modal-title">Okay, let's see what you're made of...</h4>
                 </div>
                 <div class="modal-body">
+                    <h6 class="modal-label">Challenge your friends by sharing this link.</h6>
                     <div class="input-group mb-3">
-                        <input id="quizUrl" type="text" class="form-control rounded-0 border-0 py-4 bg-light" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                        <input id="quizUrl" type="text" class="form-control rounded-0 border-0 py-4 bg-light" aria-describedby="basic-addon2">
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary" type="button" onclick="copyQuizUrl()">Copy</button>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="hideQuizModal()">Continue</button>
+                    <button type="button" class="btn btn-primary mybutton" onclick="hideQuizModal()">Ok</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <button id="scrollButton" onclick="scrollToQuiz()" class="btn btn-outline-secondary scrollToTop" title="Go to top">Go to  Question</button>
+    <!-- Winner Modal -->
+    <div class="modal" id="winnerModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Congratulations!</h4>
+                </div>
+                <div class="modal-body">
+                    <h6 id="winners" class="modal-subtitle"></h6>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary mybutton" onclick="navigateToHome()">Ok!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button id="scrollButton" onclick="scrollToTop()" class="btn btn-outline-secondary scrollToTop" title="Go to top">Go to  top</button>
 
     <!-- Scripts -->
     <script src="js/jquery-1.11.1.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/signalr/signalr.min.js"></script>
-    <script src="js/chat.js"></script>
     <script src="js/rest.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/chat.js"></script>
 
     <script>initialize();</script>
 
