@@ -38,12 +38,6 @@ $(function () {
     $("#button-addon2").click(function () {
         _sendMessage()
     });
-
-    $('#chatMessage').keypress(function (e) {
-        var key = e.which;
-        if (key == 13)  // the enter key code
-            _sendMessage();
-    });
 });
 
 function getCategories() {
@@ -63,7 +57,7 @@ function addCategories(json) {
         var html = "<div class='grid-item'><div><span>" + json[i].Title + "</span><ul class='children'>";
 
         for (var j = 0; j < json[i].Topics.length; j++) {
-            html += "<li><a href=" + $home + "/quiz.html?topic=" + json[i].Topics[j].Slug + "><img src=" + json[i].Topics[j].Icon + " alt='Avatar'/>" + json[i].Topics[j].Name + "</a></li>";
+            html += "<li><a href=" + $home + "/quiz.html?topic=" + json[i].Topics[j].Slug + "><img src=" + json[i].Topics[j].Icon + "/>" + json[i].Topics[j].Name + "</a></li>";
         }
 
         html += "</ul><div></div>";
@@ -204,10 +198,10 @@ function isEmptyOrSpaces(str) {
 }
 
 function _sendMessage() {
-    if (!isEmptyOrSpaces($("#chatMessage").val())) {
-        if (sendMessage($groupId, $username, $("#chatMessage").val())) {
-            sendMessageUI($("#chatMessage").val());
-            $("#chatMessage").val('');
+    if (!isEmptyOrSpaces($("#chatMessageContainer")[0].innerText)) {
+        if (sendMessage($groupId, $username, $("#chatMessageContainer")[0].innerText)) {
+            sendMessageUI($("#chatMessageContainer")[0].innerText);
+            $("#chatMessageContainer")[0].innerText = "";
         }
     }
 }

@@ -801,6 +801,23 @@ a {
         }
 }
 
-.adsbygoogle{
+.input-group > i {
+    padding: 5px;
+}
+
+.emoji-menu {
+    top: -180px;
+    right: 60px;
+}
+
+.chatMessagePadding{
+    padding-top: 10px;
+}
+
+.bg-primary {
+    background-color: #61adff !important;
+}
+
+.adsbygoogle {
     margin-top: 20px;
 }
