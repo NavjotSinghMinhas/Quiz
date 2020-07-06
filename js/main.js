@@ -57,7 +57,7 @@ function addCategories(json) {
         var html = "<div class='grid-item'><div><span>" + json[i].Title + "</span><ul class='children'>";
 
         for (var j = 0; j < json[i].Topics.length; j++) {
-            html += "<li><a href=" + $home + "/quiz.html?topic=" + json[i].Topics[j].Slug + "><img src='" + json[i].Topics[j].Icon + "'/>" + json[i].Topics[j].Name + "</a></li>";
+            html += "<li><a href='" + $home + "/quiz.html?topic=" + json[i].Topics[j].Slug + "'><img src='" + json[i].Topics[j].Icon + "'/>" + json[i].Topics[j].Name + "</a></li>";
         }
 
         html += "</ul><div></div>";
